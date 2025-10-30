@@ -106,7 +106,15 @@ export default function AccessPoints() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredAPs.map((ap) => (
-              <Card key={ap.id} className="hover-elevate" data-testid={`card-ap-${ap.id}`}>
+              <Card 
+                key={ap.id} 
+                className={`hover-elevate border-l-4 ${
+                  ap.status === "online" 
+                    ? "border-l-green-500" 
+                    : "border-l-red-500"
+                }`} 
+                data-testid={`card-ap-${ap.id}`}
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
@@ -120,19 +128,51 @@ export default function AccessPoints() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <p className="text-xs text-muted-foreground">Connected Users</p>
-                      <p className="text-lg font-semibold">{ap.users}</p>
+                      <p className={`text-lg font-semibold ${
+                        ap.status === "offline" 
+                          ? "text-muted-foreground" 
+                          : ""
+                      }`}>
+                        {ap.users}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Uptime</p>
-                      <p className="text-lg font-semibold">{ap.uptime}</p>
+                      <p className={`text-lg font-semibold ${
+                        ap.status === "offline" 
+                          ? "text-red-600 dark:text-red-400" 
+                          : parseFloat(ap.uptime) >= 99 
+                            ? "text-green-600 dark:text-green-400" 
+                            : parseFloat(ap.uptime) >= 95 
+                              ? "text-yellow-600 dark:text-yellow-400" 
+                              : "text-orange-600 dark:text-orange-400"
+                      }`}>
+                        {ap.uptime}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Signal Strength</p>
-                      <p className="text-lg font-semibold">{ap.signal}%</p>
+                      <p className={`text-lg font-semibold ${
+                        ap.status === "offline" 
+                          ? "text-muted-foreground" 
+                          : ap.signal >= 80 
+                            ? "text-green-600 dark:text-green-400" 
+                            : ap.signal >= 60 
+                              ? "text-yellow-600 dark:text-yellow-400" 
+                              : "text-orange-600 dark:text-orange-400"
+                      }`}>
+                        {ap.signal}%
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Bandwidth</p>
-                      <p className="text-lg font-semibold font-mono text-sm">{ap.bandwidth}</p>
+                      <p className={`text-lg font-semibold font-mono text-sm ${
+                        ap.status === "offline" 
+                          ? "text-muted-foreground" 
+                          : ""
+                      }`}>
+                        {ap.bandwidth}
+                      </p>
                     </div>
                   </div>
                   <div className="flex gap-2 pt-2">
