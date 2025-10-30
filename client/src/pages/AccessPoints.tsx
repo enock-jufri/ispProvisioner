@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Search, RotateCw, Download, Wifi, Signal } from "lucide-react";
+import { Search, RotateCw, Download, Wifi, Signal, MoreVertical, Settings } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 //todo: remove mock functionality
@@ -188,9 +194,27 @@ export default function AccessPoints() {
                     <Button variant="outline" size="sm" data-testid={`button-restart-${ap.id}`}>
                       <RotateCw className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" data-testid={`button-update-${ap.id}`}>
-                      <Download className="h-4 w-4" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" data-testid={`button-more-${ap.id}`}>
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Download className="mr-2 h-4 w-4" />
+                          Update Firmware
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Settings className="mr-2 h-4 w-4" />
+                          Configure
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <RotateCw className="mr-2 h-4 w-4" />
+                          Reboot
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </CardContent>
               </Card>
