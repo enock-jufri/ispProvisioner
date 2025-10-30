@@ -69,7 +69,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle className="text-2xl font-semibold">Bandwidth Usage</CardTitle>
             <CardDescription>Daily bandwidth consumption (GB)</CardDescription>
@@ -95,7 +95,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle className="text-2xl font-semibold">Revenue Trend</CardTitle>
             <CardDescription>Monthly revenue over time</CardDescription>
@@ -128,7 +128,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="glass">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold">Recent Activity</CardTitle>
           <CardDescription>Latest customer and system events</CardDescription>

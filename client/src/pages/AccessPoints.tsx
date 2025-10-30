@@ -46,7 +46,7 @@ export default function AccessPoints() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="glass">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -57,7 +57,7 @@ export default function AccessPoints() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -70,7 +70,7 @@ export default function AccessPoints() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -83,7 +83,7 @@ export default function AccessPoints() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -96,7 +96,7 @@ export default function AccessPoints() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="glass">
         <CardHeader>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -114,7 +114,7 @@ export default function AccessPoints() {
             {filteredAPs.map((ap) => (
               <Card 
                 key={ap.id} 
-                className={`hover-elevate border-l-4 ${
+                className={`hover-elevate border-l-4 glass-subtle ${
                   ap.status === "online" 
                     ? "border-l-green-500" 
                     : "border-l-red-500"

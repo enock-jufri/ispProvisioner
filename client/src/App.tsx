@@ -29,10 +29,10 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
+      <div className="flex h-screen w-full bg-gradient-to-br from-blue-50 via-background to-purple-50 dark:from-slate-900 dark:via-background dark:to-indigo-950">
         <AppSidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <header className="flex items-center justify-between px-6 py-4 border-b bg-background">
+          <header className="flex items-center justify-between px-6 py-4 border-b glass-strong sticky top-0 z-50">
             <SidebarTrigger data-testid="button-sidebar-toggle" />
             <div className="flex items-center gap-2">
               <ThemeToggle />

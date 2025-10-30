@@ -15,7 +15,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon: Icon, trend, className }: StatCardProps) {
   return (
-    <Card className={cn("p-6", className)} data-testid={`card-stat-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+    <Card className={cn("p-6 glass", className)} data-testid={`card-stat-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
