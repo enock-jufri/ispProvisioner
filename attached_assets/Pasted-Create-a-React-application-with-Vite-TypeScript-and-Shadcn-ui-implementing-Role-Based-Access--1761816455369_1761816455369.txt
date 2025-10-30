@@ -1,0 +1,50 @@
+Create a React application with Vite, TypeScript, and Shadcn/ui, implementing Role-Based Access
+      Control (RBAC) for various user roles.
+    2
+    3 **1. Project Setup:**
+    4 *   Initialize a new React project with Vite and TypeScript.
+    5 *   Configure Shadcn/ui and Tailwind CSS.
+    6 *   Set up ESLint and Prettier.
+    7
+    8 **2. Authentication:**
+    9 *   Build a login page.
+   10 *   Use JWT for authentication, storing tokens in `localStorage`.
+   11 *   Create an `AuthContext` for authentication state (user, role, isAuthenticated, loading).
+   12 *   Implement `login` and `logout` functions in `auth.ts`.
+   13 *   Include a development authentication bypass.
+   14
+   15 **3. Role-Based Access Control (RBAC):**
+   16 *   Define a role hierarchy (e.g., 'Super Admin', 'Network Admin').
+   17 *   Create a `ProtectedRoute` component to restrict route access by role.
+   18 *   Implement a `hasPermission` function in `auth.ts`.
+   19 *   Develop an "Unauthorized" page for restricted access.
+   20
+   21 **4. User Interface (Shadcn/ui):**
+   22 *   Utilize Shadcn/ui components extensively.
+   23 *   Design a responsive layout with a dynamic sidebar (role-based navigation) and a header (user
+      dropdown, logout).
+   24 *   Implement dark/light mode toggling via a `ThemeContext`.
+   25
+   26 **5. Pages/Components:**
+   27 *   **Login Page:** User authentication.
+   28 *   **Dashboard:** KPIs, charts (bandwidth, revenue), recent transactions.
+   29 *   **User Management:** (Role-restricted) User table with status, device info, actions (edit,
+      suspend, delete), search, and filters.
+   30 *   **Access Points:** (Role-restricted) AP cards with status, uptime, users, actions (details,
+      restart, firmware update), and a detailed dialog.
+   31 *   **Billing:** (Role-restricted) Subscription plans, revenue summary, transaction table with search,
+      filter, export, and plan add/edit modals.
+   32 *   **Reports:** (Role-restricted) Charts (revenue, user activity, bandwidth, payment methods),
+      detailed statistics, date range, and export options.
+   33 *   **Support:** (Role-restricted) Support tickets with search/filter, notification sending form,
+      recent notifications list, and new ticket creation modal.
+   34 *   **Unauthorized Page:** Access denied message.
+   35
+   36 **6. API Integration (Mock Data):**
+   37 *   Use mock data for API responses.
+   38 *   Simulate API calls with `apiRequest` in `auth.ts`.
+   39 *   Implement polling for real-time updates (e.g., AP status).
+   40
+   41 **7. Code Quality:**
+   42 *   Ensure TypeScript type safety.
+   43 *   Adhere to ESLint rules.
