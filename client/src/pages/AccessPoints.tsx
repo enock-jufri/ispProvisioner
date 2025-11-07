@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Search, RotateCw, Download, Wifi, Signal, MoreVertical, Settings } from "lucide-react";
+import { NetworkMap } from "@/components/NetworkMap";
+import { Search, RotateCw, Download, Wifi, Signal, MoreVertical, Settings, MapPin } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,23 +19,44 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-//todo: remove mock functionality
-const mockAccessPoints = [
-  { id: 1, name: "AP-North-01", location: "North Tower", status: "online" as const, uptime: "99.9%", users: 42, signal: 85, bandwidth: "245 MB/s", firmware: "v2.4.1" },
-  { id: 2, name: "AP-South-02", location: "South Building", status: "online" as const, uptime: "98.5%", users: 38, signal: 92, bandwidth: "198 MB/s", firmware: "v2.4.1" },
-  { id: 3, name: "AP-East-03", location: "East Wing", status: "offline" as const, uptime: "0%", users: 0, signal: 0, bandwidth: "0 MB/s", firmware: "v2.3.8" },
-  { id: 4, name: "AP-West-04", location: "West Campus", status: "online" as const, uptime: "97.2%", users: 55, signal: 78, bandwidth: "312 MB/s", firmware: "v2.4.1" },
-];
+import type { AccessPoint, Customer } from "@shared/schema";
 
 export default function AccessPoints() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedAP, setSelectedAP] = useState<typeof mockAccessPoints[0] | null>(null);
+  const [selectedAP, setSelectedAP] = useState<AccessPoint | null>(null);
+  const [accessPoints, setAccessPoints] = useState<AccessPoint[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("grid");
 
-  const filteredAPs = mockAccessPoints.filter((ap) =>
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/access-points").then(res => res.json()),
+      fetch("/api/customers").then(res => res.json())
+    ])
+      .then(([aps, custs]) => {
+        setAccessPoints(aps);
+        setCustomers(custs);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Failed to load data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredAPs = accessPoints.filter((ap) =>
     ap.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ap.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -51,7 +73,7 @@ export default function AccessPoints() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total APs</p>
-                <p className="text-2xl font-bold mt-1">{mockAccessPoints.length}</p>
+                <p className="text-2xl font-bold mt-1">{accessPoints.length}</p>
               </div>
               <Wifi className="h-8 w-8 text-primary" />
             </div>
@@ -63,7 +85,7 @@ export default function AccessPoints() {
               <div>
                 <p className="text-sm text-muted-foreground">Online</p>
                 <p className="text-2xl font-bold mt-1 text-green-600 dark:text-green-400">
-                  {mockAccessPoints.filter(ap => ap.status === "online").length}
+                  {accessPoints.filter(ap => ap.status === "online").length}
                 </p>
               </div>
               <Signal className="h-8 w-8 text-green-600 dark:text-green-400" />
@@ -76,7 +98,7 @@ export default function AccessPoints() {
               <div>
                 <p className="text-sm text-muted-foreground">Offline</p>
                 <p className="text-2xl font-bold mt-1 text-red-600 dark:text-red-400">
-                  {mockAccessPoints.filter(ap => ap.status === "offline").length}
+                  {accessPoints.filter(ap => ap.status === "offline").length}
                 </p>
               </div>
               <Signal className="h-8 w-8 text-red-600 dark:text-red-400" />
@@ -87,16 +109,27 @@ export default function AccessPoints() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Uptime</p>
-                <p className="text-2xl font-bold mt-1">98.9%</p>
+                <p className="text-sm text-muted-foreground">Total Customers</p>
+                <p className="text-2xl font-bold mt-1">{customers.length}</p>
               </div>
-              <RotateCw className="h-8 w-8 text-primary" />
+              <MapPin className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="glass">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="grid" data-testid="tab-grid-view">Grid View</TabsTrigger>
+          <TabsTrigger value="map" data-testid="tab-map-view">Map View</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="map" className="space-y-6">
+          <NetworkMap accessPoints={accessPoints} customers={customers} />
+        </TabsContent>
+
+        <TabsContent value="grid" className="space-y-6">
+          <Card className="glass">
         <CardHeader>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -135,11 +168,11 @@ export default function AccessPoints() {
                     <div>
                       <p className="text-xs text-muted-foreground">Connected Users</p>
                       <p className={`text-lg font-semibold ${
-                        ap.status === "offline" 
-                          ? "text-muted-foreground" 
+                        ap.status === "offline"
+                          ? "text-muted-foreground"
                           : ""
                       }`}>
-                        {ap.users}
+                        {ap.connectedUsers}
                       </p>
                     </div>
                     <div>
@@ -159,15 +192,15 @@ export default function AccessPoints() {
                     <div>
                       <p className="text-xs text-muted-foreground">Signal Strength</p>
                       <p className={`text-lg font-semibold ${
-                        ap.status === "offline" 
-                          ? "text-muted-foreground" 
-                          : ap.signal >= 80 
-                            ? "text-green-600 dark:text-green-400" 
-                            : ap.signal >= 60 
-                              ? "text-yellow-600 dark:text-yellow-400" 
+                        ap.status === "offline"
+                          ? "text-muted-foreground"
+                          : ap.signalStrength >= 80
+                            ? "text-green-600 dark:text-green-400"
+                            : ap.signalStrength >= 60
+                              ? "text-yellow-600 dark:text-yellow-400"
                               : "text-orange-600 dark:text-orange-400"
                       }`}>
-                        {ap.signal}%
+                        {ap.signalStrength}%
                       </p>
                     </div>
                     <div>
@@ -222,6 +255,8 @@ export default function AccessPoints() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
 
       <Dialog open={!!selectedAP} onOpenChange={() => setSelectedAP(null)}>
         <DialogContent className="max-w-2xl">
@@ -245,11 +280,11 @@ export default function AccessPoints() {
                 </div>
                 <div className="p-4 border rounded-lg">
                   <p className="text-sm text-muted-foreground">Firmware</p>
-                  <p className="text-lg font-semibold font-mono mt-2">{selectedAP?.firmware}</p>
+                  <p className="text-lg font-semibold font-mono mt-2">{selectedAP?.firmwareVersion}</p>
                 </div>
                 <div className="p-4 border rounded-lg">
                   <p className="text-sm text-muted-foreground">Signal Strength</p>
-                  <p className="text-lg font-semibold mt-2">{selectedAP?.signal}%</p>
+                  <p className="text-lg font-semibold mt-2">{selectedAP?.signalStrength}%</p>
                 </div>
                 <div className="p-4 border rounded-lg">
                   <p className="text-sm text-muted-foreground">Current Bandwidth</p>
@@ -259,7 +294,7 @@ export default function AccessPoints() {
             </TabsContent>
             <TabsContent value="users" className="mt-4">
               <p className="text-muted-foreground text-center py-8">
-                {selectedAP?.users} users currently connected
+                {selectedAP?.connectedUsers} users currently connected
               </p>
             </TabsContent>
             <TabsContent value="settings" className="mt-4">
