@@ -128,6 +128,35 @@ ispProvisioner/
 | `npm run check` | TypeScript type check |
 | `npm run db:push` | Push Drizzle schema to PostgreSQL (requires `DATABASE_URL`) |
 
+## Deployment
+
+The app is a standard Node.js web service. Build and start commands:
+
+```bash
+npm run build
+npm run start
+```
+
+The server listens on `process.env.PORT` (defaults to `5000`) and serves both the API and the built client.
+
+### Docker
+
+A `Dockerfile` is included:
+
+```bash
+docker build -t isp-provisioner .
+docker run -p 5000:5000 isp-provisioner
+```
+
+### Platforms (Render, Railway, Fly.io, Heroku, etc.)
+
+- **Build command:** `npm run build`
+- **Start command:** `npm run start`
+- **Environment:** set `PORT` if the platform requires a specific port (most set it automatically)
+- **Node version:** 20+
+
+No database is required because the app uses an in-memory store. Note that in-memory data resets whenever the process restarts; if you need persistence, implement the Drizzle/PostgreSQL storage layer.
+
 ## Notes
 
 - Most page data is mock/static data; only Access Points and Customers are fetched from the API.
